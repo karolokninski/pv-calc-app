@@ -1,0 +1,102 @@
+@font-face {
+    font-family: Montserrat;
+    src: url('/assets/fonts/Montserrat/Montserrat-VariableFont_wght.ttf')
+}
+
+@media only screen and (max-width: 992px) {
+    /* small screens */
+
+    .container {
+        width: 95vw;
+    }
+}
+
+@media only screen and (min-width: 992px) {
+    /* big screens */
+
+    .container {
+        width: 60vw;
+    }
+}
+
+body {
+    font-family: 'Montserrat', sans-serif;
+    margin: auto;
+}
+
+.navbar {
+    justify-content: center;
+    background-color: rgb(80, 170, 255);
+}
+
+.navbar-text {
+    margin: auto;
+    color: black;
+}
+
+section {
+    margin: 2em 0;
+    padding: 2em;
+}
+
+.main-text {
+    font-size: large;
+    text-align: center;
+}
+
+.main-text h1 {
+    margin: 1em 0;
+}
+
+.card {
+    border: solid gray 1px;
+    border-radius: 1em;
+    box-shadow: 0 6px 12px 0 rgba(0, 0, 0, 0.2);
+    transition: 0.5s;
+}
+
+.card:hover {
+    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.3);
+}
+
+.parameters-form {
+    display: flex;
+    justify-content: space-between;
+    margin: 2em 0;
+}
+
+.parameters-form .form-floating {
+    margin: 1em 0;
+}
+
+.map-container {
+    height: 20em;
+    width: 90%;
+    margin: 2em auto;
+}
+
+#button-calculate {
+    width: 100%;
+    height: 4em;
+    margin-top: 2em;
+    font-size: large;
+}
+
+#prediction-card {
+    display: none;
+}
+
+#prediction-card h2 {
+    text-align: center;
+}
+
+#plot {
+    width: 100%;
+    height: 50vh;
+    margin: auto;
+    margin-bottom: 4em;
+}
+
+.contact h2 {
+    margin-bottom: 1em;
+}

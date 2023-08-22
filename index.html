@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="pl">
+  <head>
+    <title>PV Kalkulator</title>
+    <link rel="icon" type="image/x-icon" href="assets/images/favicon.png">
+    <meta charset="UTF-8">
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <meta name="author" content="Karol Okninski">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css" integrity="sha384-b6lVK+yci+bfDmaY1u0zE8YYJt0TZxLEAFyYSLHId4xoVvsrQu3INevFKo+Xir8e" crossorigin="anonymous">
+    <link rel="stylesheet" href="/assets/styles/style.css">
+</head>
+  
+<body>
+  <!-- <nav class="navbar fixed-top"> -->
+    <!-- <nav class="navbar">
+      <h4 class="navbar-text">Kalkulator zysków z fotowoltaiki</h4>
+  </nav> -->
+
+  <div class="container">
+    <div class="col">
+      <section class="main-text">
+          <h1>Kalkulator szacunkowej produkcji energii z fotowoltaiki</h1>
+          <p>Wprowadź informację na temat instalacji i sprawdź estymowaną historyczną produkcję energii na podstawie danych historycznych</p>
+      </section>
+
+      <section class="card">
+        <div class="col">
+          <h2>1. Podaj parametry instalacji</h2>
+
+          <div class="row parameters-form">
+              <div class="col-12 col-lg-5" style="margin: auto;">
+                  <div class="form-floating">
+                    <input class="form-control" type="number" id="input-power" placeholder="Zainstalowana moc" />
+                    <label for="floatingInput">Zainstalowana moc</label>
+                  </div>
+
+                  <div class="form-floating">
+                      <input class="form-control" type="number" id="input-angle" placeholder="Kąt nachylenia" />
+                      <label for="floatingInput">Kąt nachylenia</label>
+                  </div>
+
+                  <div class="form-floating">
+                      <input class="form-control" type="number" id="input-azimuth" placeholder="Azymut" />
+                      <label for="floatingInput">Azymut</label>
+                  </div>
+              </div>
+
+              <div class="col-12 col-lg-7" style="margin: auto;">
+                  <h3>Wyjaśnienie parametrów</h3>
+                  <p>Lorem ipsum dolor sit amet consectetur adipiscing elit magna, ullamcorper sem feugiat nisl est gravida tortor, erat commodo cursus ut dictum nascetur id. Consequat egestas massa phasellus luctus et montes aenean rutrum, lobortis elementum fermentum mattis ridiculus justo varius porta venenatis, interdum pharetra velit blandit augue litora taciti.</p>
+              </div>
+          </div>
+
+          <h2>2. Wprowadź lokalizację</h2>
+          
+          <div class="map-container">
+              <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2443.635599112899!2d21.00342007649947!3d52.23183797198705!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x471ecc8c92692e49%3A0xc2e97ae5311f2dc2!2sPa%C5%82ac%20Kultury%20i%20Nauki!5e0!3m2!1spl!2spl!4v1692695374196!5m2!1spl!2spl" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+          </div>
+
+          <div class="input-group mb-3">
+            <input class="form-control" type="search" id="input-search-location" placeholder="Wyszukaj lokalizację" aria-describedby="button-location">
+            
+            <!-- <div class="form-floating">
+              <input class="form-control" type="search" id="input-search-location" placeholder="Wyszukaj lokalizację" aria-describedby="button-location" />
+              <label for="floatingInput">Wyszukaj lokalizację</label>
+            </div> -->
+            <button class="btn btn-outline-secondary" type="button" id="button-location"><i class="bi bi-search"></i></button>
+          </div>
+
+          <a href="#prediction-card">
+            <button class="btn btn-outline-primary" type="button" id="button-calculate">Oblicz szacowaną produkcję</button>
+          </a>
+        </div>
+      </section>
+
+      <section class="card" id="prediction-card">
+        <h2>Prognoza produkcji</h2>
+
+        <div id="plot"></div>
+
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th scope="col"></th>
+              <th scope="col">Produkcja (kWh)</th>
+              <th scope="col">Zysk (PLN)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">Styczeń</th>
+              <td>520</td>
+              <td>30.21</td>
+            </tr>
+            <tr>
+              <th scope="row">Luty</th>
+              <td>1210</td>
+              <td>62.40</td>
+            </tr>
+            <tr>
+              <th scope="row">Marzec</th>
+              <td>1580</td>
+              <td>76.84</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="contact">
+          <h2>Kontakt do instalatora</h2>
+
+          <div class="row">
+              <div class="col">
+                  <p>Lorem ipsum dolor sit amet consectetur adipiscing elit, integer accumsan nibh nascetur risus bibendum, a vulputate dui erat feugiat phasellus.</p>
+              </div>
+              <div class="col">
+                  <p>Lorem ipsum dolor sit amet consectetur adipiscing elit, integer accumsan nibh nascetur risus bibendum, a vulputate dui erat feugiat phasellus.</p>
+              </div>
+              <div class="col">
+                  <p>Lorem ipsum dolor sit amet consectetur adipiscing elit, integer accumsan nibh nascetur risus bibendum, a vulputate dui erat feugiat phasellus.</p>
+              </div>
+          </div>
+      </section>
+    </div>
+  </div>
+</body>
+
+  <!-- <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> -->
+  <script src="https://cdn.plot.ly/plotly-2.25.2.min.js" charset="utf-8"></script>
+  <script src="/assets/scripts/script.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script> 
+</html>

@@ -1,1 +1,1 @@
-# pv-calc-app
+# Website for calculating energy production from PV
