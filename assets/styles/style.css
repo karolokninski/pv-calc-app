@@ -70,9 +70,16 @@ section {
 }
 
 .map-container {
-    height: 20em;
-    width: 90%;
+    height: 32em;
     margin: 2em auto;
+}
+
+.consumption .form-range {
+    width: 8%;
+    height: 60px;
+    margin: 50px auto auto auto;
+    transform: rotate(270deg);
+    -moz-transform: rotate(270deg); /*do same for other browsers if required*/
 }
 
 #button-calculate {
@@ -94,9 +101,13 @@ section {
     width: 100%;
     height: 50vh;
     margin: auto;
-    margin-bottom: 4em;
+    margin-bottom: 2em;
 }
 
 .contact h2 {
     margin-bottom: 1em;
 }
+
+/* .contact #button-email {
+    margin-top ;
+} */

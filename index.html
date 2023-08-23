@@ -8,8 +8,10 @@
     <meta name="keywords" content="">
     <meta name="author" content="Karol Okninski">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css" integrity="sha384-b6lVK+yci+bfDmaY1u0zE8YYJt0TZxLEAFyYSLHId4xoVvsrQu3INevFKo+Xir8e" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
     <link rel="stylesheet" href="/assets/styles/style.css">
 </head>
   
@@ -34,18 +36,14 @@
               <div class="col-12 col-lg-5" style="margin: auto;">
                   <div class="form-floating">
                     <input class="form-control" type="number" id="input-power" placeholder="Zainstalowana moc" />
-                    <label for="floatingInput">Zainstalowana moc</label>
+                    <label for="floatingInput">Zainstalowana moc (kWh)</label>
                   </div>
 
-                  <div class="form-floating">
-                      <input class="form-control" type="number" id="input-angle" placeholder="Kąt nachylenia" />
-                      <label for="floatingInput">Kąt nachylenia</label>
-                  </div>
-
-                  <div class="form-floating">
-                      <input class="form-control" type="number" id="input-azimuth" placeholder="Azymut" />
-                      <label for="floatingInput">Azymut</label>
-                  </div>
+                  <label id="label-angle" class="form-label">Kąt nachylenia: 30°</label>
+                  <input id="input-angle" type="range" class="form-range" min="0" max="90" step="10" value="30">
+                  
+                  <label id="label-azimuth" class="form-label">Azymut: 0°</label>
+                  <input id="input-azimuth" type="range" class="form-range" min="-90" max="90" step="30" value="0">
               </div>
 
               <div class="col-12 col-lg-7" style="margin: auto;">
@@ -56,18 +54,34 @@
 
           <h2>2. Wprowadź lokalizację</h2>
           
-          <div class="map-container">
-              <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2443.635599112899!2d21.00342007649947!3d52.23183797198705!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x471ecc8c92692e49%3A0xc2e97ae5311f2dc2!2sPa%C5%82ac%20Kultury%20i%20Nauki!5e0!3m2!1spl!2spl!4v1692695374196!5m2!1spl!2spl" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+          <div style="width: 90%; margin: auto;">
+            <div id="map" class="map-container"></div>
+            <p id="map-lat" style="margin-bottom: 0;"></p>
+            <p id="map-lng" style="margin-top: 0;"></p>
+            
+            <div class="input-group mb-3">
+              <input class="form-control" type="search" id="input-search-location" placeholder="Wyszukaj lokalizację" aria-describedby="button-location">
+            
+              <button class="btn btn-outline-secondary" type="button" id="button-location"><i class="bi bi-search"></i></button>
+            </div>
           </div>
 
-          <div class="input-group mb-3">
-            <input class="form-control" type="search" id="input-search-location" placeholder="Wyszukaj lokalizację" aria-describedby="button-location">
             
-            <!-- <div class="form-floating">
-              <input class="form-control" type="search" id="input-search-location" placeholder="Wyszukaj lokalizację" aria-describedby="button-location" />
-              <label for="floatingInput">Wyszukaj lokalizację</label>
-            </div> -->
-            <button class="btn btn-outline-secondary" type="button" id="button-location"><i class="bi bi-search"></i></button>
+          <h2>3. Zużycie energii</h2>
+
+          <div class="row consumption">
+            <input type="range" class="form-range" id="customRange1">
+            <input type="range" class="form-range" id="customRange1">
+            <input type="range" class="form-range" id="customRange1">
+            <input type="range" class="form-range" id="customRange1">
+            <input type="range" class="form-range" id="customRange1">
+            <input type="range" class="form-range" id="customRange1">
+            <input type="range" class="form-range" id="customRange1">
+            <input type="range" class="form-range" id="customRange1">
+            <input type="range" class="form-range" id="customRange1">
+            <input type="range" class="form-range" id="customRange1">
+            <input type="range" class="form-range" id="customRange1">
+            <input type="range" class="form-range" id="customRange1">
           </div>
 
           <a href="#prediction-card">
@@ -81,7 +95,7 @@
 
         <div id="plot"></div>
 
-        <table class="table table-striped">
+        <table id="prediction-table" class="table table-striped">
           <thead>
             <tr>
               <th scope="col"></th>
@@ -90,27 +104,52 @@
             </tr>
           </thead>
           <tbody>
-            <tr>
+            <!-- <tr>
               <th scope="row">Styczeń</th>
               <td>520</td>
               <td>30.21</td>
-            </tr>
-            <tr>
-              <th scope="row">Luty</th>
-              <td>1210</td>
-              <td>62.40</td>
-            </tr>
-            <tr>
-              <th scope="row">Marzec</th>
-              <td>1580</td>
-              <td>76.84</td>
-            </tr>
+            </tr> -->
           </tbody>
         </table>
       </section>
 
       <section class="contact">
-          <h2>Kontakt do instalatora</h2>
+        <h4>Wprowadź adres e-mail, a skontaktujemy się z Tobą.</h4>
+
+        <div class="my-3 col-12 col-md-9 col-lg-6">
+          <input type="email" class="form-control" id="input-email" placeholder="E-mail" aria-describedby="emailHelp">
+          <div id="email-help" class="form-text" style="display: block;">We'll never share your email with anyone else.</div>
+          <div id="email-error" class="form-text" style="color: red; display: none;">Wprowadź prawidłowy adres e-mail.</div>
+        </div>
+        
+        <div class="form-check">
+          <input type="checkbox" class="form-check-input" id="checkbox-email">
+          <label class="form-check-label" for="checkbox-email">Akceptuję <a href="google.com">regulamin</a>.</label>
+        </div>
+        <span id="checkbox-error" class="form-text" style="color: red; display: none;">Zaakceptuj regulamin, aby kontynuować.</span>
+
+        <button class="mt-3 btn btn-primary" type="submit" id="button-email">Submit</button>
+
+        <!-- Email popup -->
+        <div class="modal fade" id="email-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">E-mail został przesłany.</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                Lorem ipsum dolor sit amet consectetur adipiscing elit, integer accumsan nibh nascetur risus bibendum, a vulputate dui erat feugiat phasellus.
+              </div>
+              <!-- <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+              </div> -->
+            </div>
+          </div>
+        </div>
+        <div class="mt-5">
+          <h3>Kontakt do instalatora</h3>
 
           <div class="row">
               <div class="col">
@@ -123,13 +162,16 @@
                   <p>Lorem ipsum dolor sit amet consectetur adipiscing elit, integer accumsan nibh nascetur risus bibendum, a vulputate dui erat feugiat phasellus.</p>
               </div>
           </div>
+        </div>
       </section>
     </div>
   </div>
 </body>
 
-  <!-- <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> -->
-  <script src="https://cdn.plot.ly/plotly-2.25.2.min.js" charset="utf-8"></script>
-  <script src="/assets/scripts/script.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script> 
+<!-- <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+<script src="https://cdn.plot.ly/plotly-2.25.2.min.js" charset="utf-8"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script> 
+<script src="/assets/scripts/script.js"></script>
 </html>
