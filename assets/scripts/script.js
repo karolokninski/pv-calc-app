@@ -1,16 +1,16 @@
 const months = ["",
   "Styczeń", "Luty", "Marzec", "Kwiecień", "Maj", "Czerwiec",
   "Lipiec", "Sierpień", "Wrzesień", "Październik", "Listopad", "Grudzień"
-]
+];
 
 function checkParametersInput() {
-  if (!power.value)
-    return false;
+  // if (!power.value)
+    // nie ma podanej mocy instalacji
 
-  if (!markers.length)
-    return false;
+  // if (!markers.length)
+    // nie ma zadnego markera na mapie
 
-  return true;
+  return (power.value && markers.length);
 }
 
 function checkEmailInput() {
@@ -23,41 +23,86 @@ function checkEmailInput() {
     checkbox_error.style.display = "block";
   }
 
-  return (input_email.value && checkbox_email.checked)
+  return (input_email.value && checkbox_email.checked);
 }
 
-function displayPlot(y, x) {
-  const plot_data = [{
-    y: y,
-    x: x,
-    fill: 'tozeroy',
-    type: "scatter"
-  }];
-
-  const layout = {
-    title: "Produkcja PV",
-    margin: {
-      l: 40,
-      r: 20,
-      b: 80,
-      t: 120,
-    },
+function displayPlot(plot_data) {
+  var production = {
+    name: 'Produkcja w Wh',
+    x: plot_data.time,
+    y: plot_data.production,
+    type: 'scattergl',
+    fill: 'toself',
+    stackgroup: 'one',
   };
   
-  const config = {
-    responsive: true
-  }
+  var profit = {
+    name: 'Zysk w PLN',
+    x: plot_data.time,
+    y: plot_data.profit,
+    type: 'scattergl',
+    fill: 'toself',
+    stackgroup: 'one',
+    yaxis: 'y2'
+  };
+  
+  var data = [production, profit];
 
-  Plotly.newPlot("plot", plot_data, layout, config);
+  var layout = {
+    // title: "Produkcja PV",
+    margin: {
+      l: 65,
+      r: 40,
+      b: 10,
+      t: 30,
+    },
+    yaxis: {
+      title: 'Produkcja w kWh',
+      titlefont: {
+        color: '#0022dd',
+        size: 18,
+        weight: 'bold',
+      },
+      // tickfont: {color: '#5599ff'},
+    },
+    yaxis2: {
+      title: 'Zysk w PLN',
+      titlefont: {
+        color: '#0066ff',
+        size: 18,
+        weight: 'bold',
+      },
+      // tickfont: {color: '#0033FF'},
+      overlaying: 'y',
+      side: 'right'
+    },
+    colorway: ['#0022dd', '#0066ff'],
+    "showlegend": true,
+    "legend": {
+      "x": 0,
+      "y": -0.25,
+     },
+  };
+  
+  var config = {
+    responsive: true,
+    displaylogo: false,
+  };
+
+  Plotly.newPlot("plot", data, layout, config);
 }
 
 function displayTable(table_data) {
   const summedProductionByMonth = [];
   const summedProfitByMonth = [];
+  const summedProductionByYear = [];
+  const summedProfitByYear = [];
 
   for (let year = 2018; year <= 2050; year++) {
     summedProductionByMonth[year] = new Array(13).fill(0);
     summedProfitByMonth[year] = new Array(13).fill(0);
+    summedProductionByYear[year] = 0;
+    summedProfitByYear[year] = 0;
   }
 
   for (let i = 0; i < table_data.production.length; i++) {
@@ -70,7 +115,11 @@ function displayTable(table_data) {
 
     summedProductionByMonth[year][month] += production;
     summedProfitByMonth[year][month] += profit;
+    summedProductionByYear[year] += production;
+    summedProfitByYear[year] += profit;
   }
+
+  var prediction_table = document.getElementById("prediction-table");
 
   for (let year = 2022; year <= 2022; year++) {
     for (let month = 1; month <= 12; month++) {
@@ -78,9 +127,9 @@ function displayTable(table_data) {
       let c1 = document.createElement("th")
       let c2 = document.createElement("td")
       let c3 = document.createElement("td")
-      
+
       c1.innerText = months[month]
-      c2.innerText = summedProductionByMonth[year][month].toFixed(2);
+      c2.innerText = (summedProductionByMonth[year][month] / 1000).toFixed(2);
       c3.innerText = summedProfitByMonth[year][month].toFixed(2);
       
       row.appendChild(c1);
@@ -88,6 +137,92 @@ function displayTable(table_data) {
       row.appendChild(c3);
       
       prediction_table.appendChild(row)
+    }
+    let row = document.createElement("tr")
+    let c1 = document.createElement("th")
+    let c2 = document.createElement("td")
+    let c3 = document.createElement("td")
+
+    c1.innerText = ''
+    c2.innerText = (summedProductionByYear[year] / 1000).toFixed(2);
+    c3.innerText = summedProfitByYear[year].toFixed(2);
+    
+    row.appendChild(c1);
+    row.appendChild(c2);
+    row.appendChild(c3);
+    
+    prediction_table.appendChild(row)
+  }
+}
+
+function displayTableOnSlider(table_data) {
+  const summedProductionByMonth = [];
+  const summedProfitByMonth = [];
+  const summedProductionByYear = [];
+  const summedProfitByYear = [];
+
+  for (let year = 2018; year <= 2050; year++) {
+    summedProductionByMonth[year] = new Array(13).fill(0);
+    summedProfitByMonth[year] = new Array(13).fill(0);
+    summedProductionByYear[year] = 0;
+    summedProfitByYear[year] = 0;
+  }
+
+  for (let i = 0; i < table_data.production.length; i++) {
+    const production = table_data.production[i];
+    const profit = table_data.profit[i];
+    const dateString = table_data.time[i];
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = date.getMonth() + 1;
+
+    summedProductionByMonth[year][month] += production;
+    summedProfitByMonth[year][month] += profit;
+    summedProductionByYear[year] += production;
+    summedProfitByYear[year] += profit;
+  }
+
+  for (let year = 2018; year <= 2023; year++) {
+    var table_current = document.getElementById(`table-${year}`);
+
+    while (table_current.firstChild) { // clear table
+      table_current.removeChild(table_current.firstChild);
+    }
+
+    let title = document.createElement("h3");
+    title.innerText = year;
+    title.style.textAlign = "center";
+    title.style.marginBottom = "1em";
+
+    table_current.appendChild(title);
+
+    for (let month = 0; month <= 12; month++) {
+      let row = document.createElement("div");
+      row.setAttribute("class", "row");
+
+      let cols_values = [months[month], (summedProductionByMonth[year][month] / 1000).toFixed(2), summedProfitByMonth[year][month].toFixed(2)];
+
+      if (month == 0) // table labels
+        cols_values = ["", "Produkcja w kWh", "Zysk w PLN"];
+      
+      for (let i=0; i < cols_values.length; i++) {
+        let col = document.createElement("div");
+        col.setAttribute("class", "col");
+        col.style.display = "flex";
+
+        let col_text = document.createElement("span");
+        col_text.innerText = cols_values[i];
+        col_text.style.justifyContent = "center";
+        col_text.style.margin = "auto";
+
+        if (i == 0 || month == 0)
+          col_text.style.fontWeight = "bold";
+
+        col.appendChild(col_text);
+        row.appendChild(col);
+      }
+      
+      table_current.appendChild(row);
     }
   }
 }
@@ -114,25 +249,25 @@ var angle = document.getElementById("input-angle");
 var azimuth = document.getElementById("input-azimuth");
 var button_calculate = document.getElementById("button-calculate");
 var prediction_card = document.getElementById("prediction-card");
-var prediction_table = document.getElementById("prediction-table");
+var span_wrong_input = document.getElementById("span-wrong-input");
 
-power.oninput = function() {
-  power.value = this.value;
-}
+// power.oninput = function() {
+//   power.value = this.value;
+// }
 
 angle.oninput = function() {
   angle.value = this.value;
-  document.getElementById("label-angle").innerText = 'Kąt nachylenia: ' + this.value + '°'
+  document.getElementById("label-angle").innerText = `Kąt nachylenia: ${this.value}°`;
 }
 
 azimuth.oninput = function() {
   azimuth.value = this.value;
-  document.getElementById("label-azimuth").innerText = 'Azymut: ' + this.value + '°'
+  document.getElementById("label-azimuth").innerText = `Azymut: ${this.value}°`;
 }
 
 // map
 
-const markers = []
+const markers = [];
 var map = L.map('map').setView([52, 19], 6);
 
 L.tileLayer('https://{s}.tile.osm.org/{z}/{x}/{y}.png', {
@@ -146,7 +281,7 @@ var geocoder = L.Control.geocoder({
   }).addTo(map);
 
 map.on('click', function(e) {
-  addNewMarker(e.latlng)
+  addNewMarker(e.latlng);
 });
 
 // show prediction card
@@ -154,16 +289,17 @@ map.on('click', function(e) {
 button_calculate.onclick = function() {
   if (checkParametersInput()) {
     prediction_card.style.display = "block";
+    span_wrong_input.style.display = "none";
 
-    const url = 'http://127.0.0.1:80/api/estimate';
+    const url = 'http://api-rce.azurewebsites.net:80/api/estimate';
     const request_data = {
-        start: '2022-01-01',
-        end: '2022-12-31',
+        start: '2018-01-01',
+        end: '2023-07-11',
         lat: markers[0].lat,
         lon: markers[0].lng,
         azimuth: parseInt(azimuth.value),
         angle: parseInt(angle.value),
-        peak_power: parseInt(power.value),
+        peak_power: parseInt(power.value) * 1000,
     };
     
     const headers = new Headers();
@@ -179,8 +315,8 @@ button_calculate.onclick = function() {
     .then(response_data => {
         console.log(response_data);
     
-        displayPlot(y=response_data.production, x=response_data.time)
-        displayTable(table_data=response_data)
+        displayPlot(plot_data=response_data);
+        displayTableOnSlider(table_data=response_data);
     })
     .catch(error => {
         console.error('Error:', error);
@@ -188,7 +324,8 @@ button_calculate.onclick = function() {
   }
 
   else {
-    console.log('zle podane dane')
+    console.log('zle podane dane');
+    span_wrong_input.style.display = "block";
   }
 }
 
@@ -215,7 +352,7 @@ button_email.onclick = function() {
    if (checkEmailInput()){
     email_modal.show();
 
-    const url = 'http://127.0.0.1:80/api/save_email';
+    const url = 'http://api-rce.azurewebsites.net:80/api/save_email';
     const request_data = {
         email: input_email.value
     };
@@ -234,10 +371,10 @@ button_email.onclick = function() {
         console.log(response_data);
 
         if (response_data.status == '200')
-          exampleModalCenter.ariaHidden = false
+          exampleModalCenter.ariaHidden = false;
 
         else
-          console.log('nie jest git')
+          console.log('API save_email error');
     })
     .catch(error => {
         console.error('Error:', error);

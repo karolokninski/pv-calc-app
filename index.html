@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css" integrity="sha384-b6lVK+yci+bfDmaY1u0zE8YYJt0TZxLEAFyYSLHId4xoVvsrQu3INevFKo+Xir8e" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
-    <link rel="stylesheet" href="/assets/styles/style.css">
+    <link rel="stylesheet" href="assets/styles/style.css">
 </head>
   
 <body>
@@ -35,7 +35,7 @@
           <div class="row parameters-form">
               <div class="col-12 col-lg-5" style="margin: auto;">
                   <div class="form-floating">
-                    <input class="form-control" type="number" id="input-power" placeholder="Zainstalowana moc" />
+                    <input class="form-control" type="number" step="0.01" id="input-power" placeholder="Zainstalowana moc" />
                     <label for="floatingInput">Zainstalowana moc (kWh)</label>
                   </div>
 
@@ -59,15 +59,14 @@
             <p id="map-lat" style="margin-bottom: 0;"></p>
             <p id="map-lng" style="margin-top: 0;"></p>
             
-            <div class="input-group mb-3">
+            <!-- <div class="input-group mb-3">
               <input class="form-control" type="search" id="input-search-location" placeholder="Wyszukaj lokalizację" aria-describedby="button-location">
             
               <button class="btn btn-outline-secondary" type="button" id="button-location"><i class="bi bi-search"></i></button>
-            </div>
+            </div> -->
           </div>
 
-            
-          <h2>3. Zużycie energii</h2>
+          <!-- <h2>3. Zużycie energii</h2>
 
           <div class="row consumption">
             <input type="range" class="form-range" id="customRange1">
@@ -82,11 +81,12 @@
             <input type="range" class="form-range" id="customRange1">
             <input type="range" class="form-range" id="customRange1">
             <input type="range" class="form-range" id="customRange1">
-          </div>
+          </div> -->
 
           <a href="#prediction-card">
             <button class="btn btn-outline-primary" type="button" id="button-calculate">Oblicz szacowaną produkcję</button>
           </a>
+          <span id="span-wrong-input" style="color: red; font-size: large; display: none;">Wprowadź prawidłowe dane</span>
         </div>
       </section>
 
@@ -95,7 +95,58 @@
 
         <div id="plot"></div>
 
-        <table id="prediction-table" class="table table-striped">
+        <div id="carouselExampleCaptions" class="carousel slide carousel-dark">
+          <div class="carousel-indicators">
+            <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+            <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1" aria-label="Slide 2"></button>
+            <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2" aria-label="Slide 3"></button>
+            <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="3" aria-label="Slide 4"></button>
+            <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="4" aria-label="Slide 5"></button>
+            <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="5" aria-label="Slide 6"></button>
+          </div>
+          <div class="carousel-inner">
+            <div class="carousel-item active">
+              <div style="width: 100%;">
+                <div id="table-2023" class="col my-5 mx-auto w-75"></div>
+              </div>
+            </div>
+            <div class="carousel-item">
+              <div style="width: 100%;">
+                <div id="table-2022" class="col my-5 mx-auto w-75"></div>
+              </div>
+            </div>
+            <div class="carousel-item">
+              <div style="width: 100%;">
+                <div id="table-2021" class="col my-5 mx-auto w-75"></div>
+              </div>
+            </div>
+            <div class="carousel-item">
+              <div style="width: 100%;">
+                <div id="table-2020" class="col my-5 mx-auto w-75"></div>
+              </div>
+            </div>
+            <div class="carousel-item">
+              <div style="width: 100%;">
+                <div id="table-2019" class="col my-5 mx-auto w-75"></div>
+              </div>
+            </div>
+            <div class="carousel-item">
+              <div style="width: 100%;">
+                <div id="table-2018" class="col my-5 mx-auto w-75"></div>
+              </div>
+            </div>
+          </div>
+          <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+          </button>
+          <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+          </button>
+        </div>
+
+        <!-- <table id="prediction-table" class="table table-striped">
           <thead>
             <tr>
               <th scope="col"></th>
@@ -104,31 +155,33 @@
             </tr>
           </thead>
           <tbody>
-            <!-- <tr>
+            <tr>
               <th scope="row">Styczeń</th>
               <td>520</td>
               <td>30.21</td>
-            </tr> -->
+            </tr>
           </tbody>
-        </table>
+        </table> -->
       </section>
 
       <section class="contact">
-        <h4>Wprowadź adres e-mail, a skontaktujemy się z Tobą.</h4>
+        <h3 style="text-align: center;">Wprowadź adres e-mail, a skontaktujemy się z Tobą.</h3>
 
-        <div class="my-3 col-12 col-md-9 col-lg-6">
-          <input type="email" class="form-control" id="input-email" placeholder="E-mail" aria-describedby="emailHelp">
-          <div id="email-help" class="form-text" style="display: block;">We'll never share your email with anyone else.</div>
-          <div id="email-error" class="form-text" style="color: red; display: none;">Wprowadź prawidłowy adres e-mail.</div>
-        </div>
-        
-        <div class="form-check">
-          <input type="checkbox" class="form-check-input" id="checkbox-email">
-          <label class="form-check-label" for="checkbox-email">Akceptuję <a href="google.com">regulamin</a>.</label>
-        </div>
-        <span id="checkbox-error" class="form-text" style="color: red; display: none;">Zaakceptuj regulamin, aby kontynuować.</span>
+        <div class="my-5 mx-auto col-12 col-md-9 col-lg-6">
+          <div class="row">
+            <input type="email" class="form-control" id="input-email" placeholder="E-mail" aria-describedby="emailHelp">
+            <div id="email-help" class="form-text" style="display: block;">We'll never share your email with anyone else.</div>
+            <div id="email-error" class="form-text" style="color: red; display: none;">Wprowadź prawidłowy adres e-mail.</div>
 
-        <button class="mt-3 btn btn-primary" type="submit" id="button-email">Submit</button>
+            <div class="mt-2 form-check">
+              <input type="checkbox" class="form-check-input" id="checkbox-email">
+              <label class="form-check-label" for="checkbox-email">Akceptuję <a href="regulamin.html">regulamin</a>.</label>
+            </div>
+            <span id="checkbox-error" class="form-text" style="color: red; display: none;">Zaakceptuj regulamin, aby kontynuować.</span>
+
+            <button class="my-4 btn btn-primary" type="submit" id="button-email">Zapisz</button>
+          </div>
+        </div>
 
         <!-- Email popup -->
         <div class="modal fade" id="email-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -141,13 +194,10 @@
               <div class="modal-body">
                 Lorem ipsum dolor sit amet consectetur adipiscing elit, integer accumsan nibh nascetur risus bibendum, a vulputate dui erat feugiat phasellus.
               </div>
-              <!-- <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
-              </div> -->
             </div>
           </div>
         </div>
+        
         <div class="mt-5">
           <h3>Kontakt do instalatora</h3>
 
@@ -173,5 +223,5 @@
 <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
 <script src="https://cdn.plot.ly/plotly-2.25.2.min.js" charset="utf-8"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script> 
-<script src="/assets/scripts/script.js"></script>
+<script src="assets/scripts/script.js"></script>
 </html>
