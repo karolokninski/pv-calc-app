@@ -16,16 +16,11 @@
 </head>
   
 <body>
-  <!-- <nav class="navbar fixed-top"> -->
-    <!-- <nav class="navbar">
-      <h4 class="navbar-text">Kalkulator zysków z fotowoltaiki</h4>
-  </nav> -->
-
   <div class="container">
     <div class="col">
       <section class="main-text">
-          <h1>Kalkulator szacunkowej produkcji energii z fotowoltaiki</h1>
-          <p>Wprowadź informację na temat instalacji i sprawdź estymowaną historyczną produkcję energii na podstawie danych historycznych</p>
+        <h1>Kalkulator szacunkowej produkcji energii z fotowoltaiki</h1>
+        <p>Wprowadź informację na temat instalacji i sprawdź estymowaną historyczną produkcję energii na podstawie danych historycznych</p>
       </section>
 
       <section class="card">
@@ -33,30 +28,59 @@
           <h2>1. Podaj parametry instalacji</h2>
 
           <div class="row parameters-form">
-              <div class="col-12 col-lg-5" style="margin: auto;">
+              <div class="mb-3 col-12 col-lg-5" style="margin: auto;">
+                <form id="form-input-parameters" class="needs-validation">
                   <div class="form-floating">
-                    <input class="form-control" type="number" step="0.01" id="input-power" placeholder="Zainstalowana moc" />
-                    <label for="floatingInput">Zainstalowana moc (kWh)</label>
+                    <input id="input-power" class="form-control" type="number" step="0.01" placeholder="Zainstalowana moc" required />
+                    <label for="floatingInput">Zainstalowana moc (kWp)</label>
+                    <div class="invalid-feedback">
+                      Wprowadź moc instalacji fotowoltaicznej.
+                    </div>
                   </div>
 
-                  <label id="label-angle" class="form-label">Kąt nachylenia: 30°</label>
-                  <input id="input-angle" type="range" class="form-range" min="0" max="90" step="10" value="30">
+                  <div class="my-3 pt-2 px-2 border rounded">
+                    <label id="label-angle" class="form-label">Kąt nachylenia paneli: 30°</label>
+                    <input id="input-angle" type="range" class="form-range" min="0" max="90" step="10" value="30">
+                  </div>
+
+                  <div class="form-floating">
+
+                    <select id="input-select-azimuth" class="form-select" aria-label="Default select example">
+                      <option value="90">Zachód 270°</option>
+                      <option value="60">Południowy Zachód 240°</option>
+                      <option value="30">Południowy Zachód 210°</option>
+                      <option value="0" selected>Południe 180°</option>
+                      <option value="-30">Południowy Wschód 150°</option>
+                      <option value="-60">Południowy Wschód 120°</option>
+                      <option value="-90">Wschód 90°</option>
+                    </select>
+                    <label for="floatingSelect">Kierunek paneli</label>
+                  </div>
                   
-                  <label id="label-azimuth" class="form-label">Azymut: 0°</label>
-                  <input id="input-azimuth" type="range" class="form-range" min="-90" max="90" step="30" value="0">
+                  <!-- <div class="mt-3 pt-2 px-2 border rounded">
+                  <label id="label-azimuth" class="form-label">Skierowanie paneli: 0°</label>
+                  <input id="input-azimuth" type="range" class="form-range" min="-90" max="90" step="30" value="0"> -->
+                </form>
               </div>
 
-              <div class="col-12 col-lg-7" style="margin: auto;">
-                  <h3>Wyjaśnienie parametrów</h3>
-                  <p>Lorem ipsum dolor sit amet consectetur adipiscing elit magna, ullamcorper sem feugiat nisl est gravida tortor, erat commodo cursus ut dictum nascetur id. Consequat egestas massa phasellus luctus et montes aenean rutrum, lobortis elementum fermentum mattis ridiculus justo varius porta venenatis, interdum pharetra velit blandit augue litora taciti.</p>
+              <div class="my-2 col-12 col-lg-7" style="margin: auto;">
+                <h3>Wyjaśnienie parametrów</h3>
+                <p>Moc instalacji PV, wyrażona w kilowatopik (1kWp = 1000Wp), to maksymalna wydajność jaką może osiągnąć instalacja fotowoltaiczna.</p>
+                <p>Kąt nachylenia paneli PV to pochylenie ich powierzchni względem poziomu, wpływające na efektywność absorpcji energii słonecznej.</p>
+                <p>Kierunek instalacji paneli PV to orientacja względem Słońca, optymalizująca pochłanianie energii słonecznej dla maksymalnej wydajności.</p>
               </div>
           </div>
 
           <h2>2. Wprowadź lokalizację</h2>
           
           <div style="width: 90%; margin: auto;">
-            <div id="map" class="map-container"></div>
-            <p id="map-lat" style="margin-bottom: 0;"></p>
+            <div id="map-container">
+              <div id="map" style="width: 100%; height: 100%; border: solid 2px white; border-radius: 1em"></div>
+            </div>
+            <div id="map-wrong-input" class="invalid-feedback" style="display: none;">
+              Kliknij na mapę, aby wprowadzić lokalizację.
+            </div>
+            <p id="map-lat" style="margin-bottom: 0; margin-top: 1em;"></p>
             <p id="map-lng" style="margin-top: 0;"></p>
             
             <!-- <div class="input-group mb-3">
@@ -83,94 +107,36 @@
             <input type="range" class="form-range" id="customRange1">
           </div> -->
 
-          <a href="#prediction-card">
+          <a href="#simulation-card">
             <button class="btn btn-outline-primary" type="button" id="button-calculate">Oblicz szacowaną produkcję</button>
           </a>
+
           <span id="span-wrong-input" style="color: red; font-size: large; display: none;">Wprowadź prawidłowe dane</span>
         </div>
       </section>
 
-      <section class="card" id="prediction-card">
-        <h2>Prognoza produkcji</h2>
+      <section class="card" id="simulation-card">
+        <h2>Symulacja produkcji</h2>
+        <br>
 
-        <div id="plot"></div>
+        <h3>Produkcja i zysk</h3>
+        <div id="plot" class="plot"></div>
 
-        <div id="carouselExampleCaptions" class="carousel slide carousel-dark">
-          <div class="carousel-indicators">
-            <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-            <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1" aria-label="Slide 2"></button>
-            <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2" aria-label="Slide 3"></button>
-            <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="3" aria-label="Slide 4"></button>
-            <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="4" aria-label="Slide 5"></button>
-            <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="5" aria-label="Slide 6"></button>
-          </div>
-          <div class="carousel-inner">
-            <div class="carousel-item active">
-              <div style="width: 100%;">
-                <div id="table-2023" class="col my-5 mx-auto w-75"></div>
-              </div>
-            </div>
-            <div class="carousel-item">
-              <div style="width: 100%;">
-                <div id="table-2022" class="col my-5 mx-auto w-75"></div>
-              </div>
-            </div>
-            <div class="carousel-item">
-              <div style="width: 100%;">
-                <div id="table-2021" class="col my-5 mx-auto w-75"></div>
-              </div>
-            </div>
-            <div class="carousel-item">
-              <div style="width: 100%;">
-                <div id="table-2020" class="col my-5 mx-auto w-75"></div>
-              </div>
-            </div>
-            <div class="carousel-item">
-              <div style="width: 100%;">
-                <div id="table-2019" class="col my-5 mx-auto w-75"></div>
-              </div>
-            </div>
-            <div class="carousel-item">
-              <div style="width: 100%;">
-                <div id="table-2018" class="col my-5 mx-auto w-75"></div>
-              </div>
-            </div>
-          </div>
-          <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Previous</span>
-          </button>
-          <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Next</span>
-          </button>
+        <h3>Skumulowana produkcja i zysk</h3>
+        <div id="plot-cumulative" class="plot"></div>
+
+        <div class="table-container">
+          <table id="simulation-table" class="table table-striped caption-top"></table>
         </div>
-
-        <!-- <table id="prediction-table" class="table table-striped">
-          <thead>
-            <tr>
-              <th scope="col"></th>
-              <th scope="col">Produkcja (kWh)</th>
-              <th scope="col">Zysk (PLN)</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <th scope="row">Styczeń</th>
-              <td>520</td>
-              <td>30.21</td>
-            </tr>
-          </tbody>
-        </table> -->
       </section>
 
       <section class="contact">
         <h3 style="text-align: center;">Wprowadź adres e-mail, a skontaktujemy się z Tobą.</h3>
 
-        <div class="my-5 mx-auto col-12 col-md-9 col-lg-6">
+        <div class="my-4 mx-auto col-12 col-md-9 col-lg-6">
           <div class="row">
             <input type="email" class="form-control" id="input-email" placeholder="E-mail" aria-describedby="emailHelp">
-            <div id="email-help" class="form-text" style="display: block;">We'll never share your email with anyone else.</div>
+            <div id="email-help" class="form-text" style="display: block;">Nigdy nie udostępnimy Twojego adresu e-mail.</div>
             <div id="email-error" class="form-text" style="color: red; display: none;">Wprowadź prawidłowy adres e-mail.</div>
 
             <div class="mt-2 form-check">
@@ -222,6 +188,7 @@
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
 <script src="https://cdn.plot.ly/plotly-2.25.2.min.js" charset="utf-8"></script>
+<script src="assets/scripts/plotly-locale-pl.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script> 
 <script src="assets/scripts/script.js"></script>
 </html>
