@@ -1,4 +1,78 @@
+const start_date_string = "2020-01-01"
+const start_date = new Date(start_date_string)
 
+var today = new Date();
+var dd = String(today.getDate()).padStart(2, '0');
+var mm = String(today.getMonth() + 1).padStart(2, '0');
+var yyyy = today.getFullYear();
+const today_string = `${yyyy}-${mm}-${dd}`;
+
+function addRow() {
+  var value1 = document.getElementById("value1").value;
+  var value2 = document.getElementById("value2").value;
+  var value3 = document.getElementById("value3").value;
+
+  if (value1 == "" || value2 == "" || (value1 == "Pompa ciepła" && value3 == ""))
+    return;
+
+  var table = document.getElementById("dataTable");
+  var newRow = table.insertRow(table.rows.length);
+  
+  var cell1 = newRow.insertCell(0);
+  var cell2 = newRow.insertCell(1);
+  var cell3 = newRow.insertCell(2);
+  
+  cell1.innerHTML = value1;
+  cell2.innerHTML = value2;
+  cell3.innerHTML = value3;
+}
+
+function deleteRow() {
+  
+}
+
+(() => {
+  'use strict'
+
+  // Fetch all the forms we want to apply custom Bootstrap validation styles to
+  const forms = document.querySelectorAll('.needs-validation')
+
+  // Loop over them and prevent submission
+  Array.from(forms).forEach(form => {
+    form.addEventListener('submit', event => {
+      if (!form.checkValidity()) {
+        event.preventDefault()
+        event.stopPropagation()
+      }
+
+      form.classList.add('was-validated')
+      
+    }, false)
+  })
+})()
+
+document.getElementById('consumtion-button').onclick = function() {
+  addRow()
+}
+
+document.getElementById("value1").oninput = function() {
+  // angle.value = this.value;
+  // document.getElementById("value1").innerText = `Kąt nachylenia paneli: ${this.value}°`;
+
+  console.log(this.value);
+
+  if (this.value == "Pompa ciepła")
+    document.getElementById('value3').removeAttribute('disabled');
+
+  else {
+    document.getElementById('value3').setAttribute('disabled', '');
+    document.getElementById('value3').value = "";
+
+  }
+
+}
+
+document.getElementById
 
 function checkParametersInput() {
   if (!markers.length) {
@@ -27,17 +101,17 @@ function checkEmailInput() {
 }
 
 function displayPlot(plot_data, id, cumulative=0) {
-  const cumulativeSumProduction = (sum => value => sum += value)(0);
+  const cumulativeSumProduction = (sum => value => sum += value/1000)(0);
   const cumulativeSumProfit = (sum => value => sum += value)(0);
 
   var production = {
-    name: (cumulative) ? 'Skumulowana produkcja (kWh)' : 'Produkcja (kWh)',
+    name: (cumulative) ? 'Skumulowana produkcja (MWh)' : 'Produkcja (kWh)',
     x: plot_data.time,
     y: (cumulative) ? plot_data.production.map(cumulativeSumProduction) : plot_data.production,
     type: 'scattergl',
     fill: (cumulative) ? 'tozeroy' : 'toself',
     stackgroup: 'one',
-    hovertemplate: (cumulative) ? 'Data: %{x}<br>Skumulowana produkcja: %{y} kWh<extra></extra>' : 'Data: %{x}<br>Produkcja: %{y} kWh<extra></extra>',
+    hovertemplate: (cumulative) ? 'Data: %{x}<br>Skumulowana produkcja: %{y} MWh<extra></extra>' : 'Data: %{x}<br>Produkcja: %{y} kWh<extra></extra>',
   };
   
   var profit = {
@@ -68,7 +142,7 @@ function displayPlot(plot_data, id, cumulative=0) {
       t: 20,
     },
     yaxis: {
-      title: 'Produkcja (kWh)',
+      title: (cumulative) ? 'Skumulowana produkcja (MWh)' : 'Produkcja (kWh)',
       titlefont: {
         color: '#0A2FFF',
         size: 21,
@@ -76,7 +150,7 @@ function displayPlot(plot_data, id, cumulative=0) {
       },
     },
     yaxis2: {
-      title: 'Zysk (PLN)',
+      title: (cumulative) ? 'Skumulowany zysk (PLN)' : 'Zysk (PLN)',
       titlefont: {
         color: '#31D843',
         size: 21,
@@ -99,7 +173,192 @@ function displayPlot(plot_data, id, cumulative=0) {
     locale: "pl",
   };
 
+  document.getElementById(`${id}-loading`).style.display = "none";
+  document.getElementById(id).style.display = "block";
+
   Plotly.newPlot(id, data, layout, config);
+
+}
+
+function displayTableOnHeatmaps(table_data) {
+  const start_year = start_date.getFullYear();
+
+  var xValues = [];
+
+  const currentDate = new Date();
+  for (let year = start_year; year <= currentDate.getFullYear(); year++)
+    xValues.push(year);
+
+  var yValues = ["Grudzień", "Listopad", "Październik", "Wrzesień", "Sierpień", "Lipiec", "Czerwiec", "Maj", "Kwiecień", "Marzec", "Luty", "Styczeń"];
+
+  var summed_production = [];
+  var summed_profit = [];
+
+  for (let year = start_year; year <= 2050; year++) {
+    summed_production[year] = new Array(13).fill(0);
+    summed_profit[year] = new Array(13).fill(0);
+  }
+
+  for (let i = 0; i < table_data.time.length; i++) {
+    const dateString = table_data.time[i];
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = date.getMonth();
+
+    summed_production[year][month] += table_data.production[i];
+    summed_profit[year][month] += table_data.profit[i];
+  }
+
+  var zValues_production = [];
+  var zValues_profit = [];
+
+  for (let i=0; i < yValues.length; i++) {
+    let row_production = [];
+    let row_profit = [];
+
+    for (let j=0; j < xValues.length; j++) {
+      row_production.push(summed_production[start_year+j][yValues.length-1-i].toFixed(1)); // yValues.length-1-i to reverse heatmap order
+      row_profit.push(summed_profit[start_year+j][yValues.length-1-i].toFixed(2));
+    }
+
+    zValues_production.push(row_production);
+    zValues_profit.push(row_profit);
+  }
+  
+  var colorscaleValue = [
+    [0, '#3D9970'],
+    [1, '#001f3f']
+  ];
+
+  var data_production = [{
+    x: xValues,
+    y: yValues,
+    z: zValues_production,
+    type: 'heatmap',
+    colorscale: colorscaleValue,
+    showscale: false
+  }];
+    
+  // let customWidth = xValues.length*120;
+
+  var layout_production = {
+    title: 'Produkcja',
+    // width: customWidth,
+    margin: {
+      l: 80,
+      r: 0,
+      b: 0,
+      t: 80,
+    },
+    annotations: [],
+    xaxis: {
+      ticks: '',
+      side: 'top'
+    },
+    yaxis: {
+      ticks: '',
+      ticksuffix: ' ',
+      width: 700,
+      height: 700,
+      autosize: false
+    }
+  };
+
+  for ( var i = 0; i < yValues.length; i++ ) {
+    for ( var j = 0; j < xValues.length; j++ ) {
+      var currentValue = zValues_production[i][j];
+      if (currentValue != 0.0) {
+        var textColor = 'white';
+      }else{
+        var textColor = 'black';
+      }
+      var result = {
+        xref: 'x1',
+        yref: 'y1',
+        x: xValues[j],
+        y: yValues[i],
+        text: `${zValues_production[i][j]} kWh`,
+        font: {
+          family: 'Arial',
+          size: 12,
+          color: 'rgb(50, 171, 96)'
+        },
+        showarrow: false,
+        font: {
+          color: textColor
+        }
+      };
+      layout_production.annotations.push(result);
+    }
+  }
+
+  var config = {
+    responsive: true,
+    displaylogo: false
+  };
+
+  Plotly.newPlot('heatmap-production', data_production, layout_production, config);
+
+  var data_profit = [{
+    x: xValues,
+    y: yValues,
+    z: zValues_profit,
+    type: 'heatmap',
+    colorscale: colorscaleValue,
+    showscale: false
+  }];
+    
+  var layout_profit = {
+    title: 'Zysk',
+    margin: {
+      l: 80,
+      r: 0,
+      b: 0,
+      t: 80,
+    },
+    annotations: [],
+    xaxis: {
+      ticks: '',
+      side: 'top'
+    },
+    yaxis: {
+      ticks: '',
+      ticksuffix: ' ',
+      width: 700,
+      height: 700,
+      autosize: false
+    }
+  };
+
+  for ( var i = 0; i < yValues.length; i++ ) {
+    for ( var j = 0; j < xValues.length; j++ ) {
+      var currentValue = zValues_profit[i][j];
+      if (currentValue != 0.0) {
+        var textColor = 'white';
+      }else{
+        var textColor = 'black';
+      }
+      var result = {
+        xref: 'x1',
+        yref: 'y1',
+        x: xValues[j],
+        y: yValues[i],
+        text: `${zValues_profit[i][j]} PLN`,
+        font: {
+          family: 'Arial',
+          size: 12,
+          color: 'rgb(50, 171, 96)'
+        },
+        showarrow: false,
+        font: {
+          color: textColor
+        }
+      };
+      layout_profit.annotations.push(result);
+    }
+  }
+
+  Plotly.newPlot('heatmap-profit', data_profit, layout_profit, config);
 }
 
 function displayTable(table_data) {
@@ -324,21 +583,13 @@ function addNewMarker(geolocation) {
 
   document.getElementById('map-wrong-input').style.display = "none";
 
-  document.getElementById("map-lat").innerText = 'Szerokość: ' + geolocation.lat
-  document.getElementById("map-lng").innerText = 'Wysokość: ' + geolocation.lng
+  document.getElementById("map-lat").innerText = `Szerokość: ${geolocation.lat.toFixed(4)}`;
+  document.getElementById("map-lng").innerText = `Wysokość: ${geolocation.lng.toFixed(4)}`;
 }
 
 var power = document.getElementById("input-power");
 var angle = document.getElementById("input-angle");
-// var azimuth = document.getElementById("input-azimuth");
 var azimuth = document.getElementById("input-select-azimuth");
-var button_calculate = document.getElementById("button-calculate");
-var simulation_card = document.getElementById("simulation-card");
-// var span_wrong_input = document.getElementById("span-wrong-input");
-
-// power.oninput = function() {
-//   power.value = this.value;
-// }
 
 angle.oninput = function() {
   angle.value = this.value;
@@ -353,14 +604,22 @@ azimuth.oninput = function() {
 // map
 
 var markers = [];
-var map = L.map('map').setView([52, 19], 6);
+var map = L.map('map', {
+  attributionControl: false
+}).setView([52, 19], 6);
 
 L.tileLayer('https://{s}.tile.osm.org/{z}/{x}/{y}.png', {
   attribution: '&copy; <a href="https://osm.org/copyright">OpenStreetMap</a>'
 }).addTo(map);
 
+L.control.attribution({
+  position: 'topright'
+}).addTo(map);
+
 var geocoder = L.Control.geocoder({
-  defaultMarkGeocode: false
+  defaultMarkGeocode: false,
+  collapsed: false,
+  position: "bottomleft"
 }).on('markgeocode', function(e) {
   addNewMarker(e.geocode.center);
   }).addTo(map);
@@ -371,16 +630,23 @@ map.on('click', function(e) {
 
 // show simulation card
 
+var button_calculate = document.getElementById("button-calculate");
+var simulation_card = document.getElementById("simulation-card");
+
 button_calculate.onclick = function() {
   if (checkParametersInput()) {
     simulation_card.style.display = "block";
     document.getElementById("span-wrong-input").style.display = "none";
 
-    console.log(parseInt(power.value))
+    document.getElementById('plot').style.display = "none";
+    document.getElementById('plot-loading').style.display = "block";
+    document.getElementById('plot-cumulative').style.display = "none";
+    document.getElementById('plot-cumulative-loading').style.display = "block";
 
     const url = 'http://api-rce.azurewebsites.net:80/api/estimate';
     const request_data = {
-        start: '2018-01-01',
+        // start: '2018-01-01',
+        start: start_date_string,
         end: '2023-07-11',
         lat: markers[0].lat,
         lon: markers[0].lng,
@@ -405,10 +671,9 @@ button_calculate.onclick = function() {
         for (let i=0; i < response_data.production.length; i++)
         response_data.production[i] /= 1000 // convert from Wp to kWp
     
-        displayPlot(plot_data=response_data, id='plot');
+        displayPlot(plot_data=response_data, id='plot', cumulative=0);
         displayPlot(plot_data=response_data, id='plot-cumulative', cumulative=1);
-        // displayTableOnSlider(table_data=response_data);
-        displayTable(table_data=response_data);
+        displayTableOnHeatmaps(table_data=response_data);
     })
     .catch(error => {
         console.error('Error:', error);
@@ -444,13 +709,15 @@ button_email.onclick = function() {
    if (checkEmailInput()){
     email_modal.show();
 
+    console.log(input_email.value)
+
     const url = 'http://api-rce.azurewebsites.net:80/api/save_email';
     const request_data = {
         email: input_email.value
     };
     
     const headers = new Headers();
-    headers.append('Authorization', 'Bearer API_key_here');
+    headers.append('Authorization', 'Bearer f14ab0c5-b4b9-4674-8739-6d3319f94490');
     headers.append('Content-Type', 'application/json');
     
     fetch(url, {

@@ -24,88 +24,218 @@
       </section>
 
       <section class="card">
-        <div class="col">
+        <div class="mt-2 col">
           <h2>1. Podaj parametry instalacji</h2>
+          <p style="width: 90%; margin: auto; font-size: 1em;">
+            Wprowadź parametry instalacji fotowoltaicznej: moc instalacji, kąt nachylenia oraz kierunek paneli. Obok miejsca na wprowadzanie danych znajduje się wyjaśnienie wprowadzanych parametrów.
+          </p>
 
-          <div class="row parameters-form">
-              <div class="mb-3 col-12 col-lg-5" style="margin: auto;">
-                <form id="form-input-parameters" class="needs-validation">
-                  <div class="form-floating">
-                    <input id="input-power" class="form-control" type="number" step="0.01" placeholder="Zainstalowana moc" required />
-                    <label for="floatingInput">Zainstalowana moc (kWp)</label>
-                    <div class="invalid-feedback">
-                      Wprowadź moc instalacji fotowoltaicznej.
-                    </div>
+          <div class="mx-3 row parameters-form">
+            <div class="mb-4 col-12 col-lg-5" style="margin: auto;">
+              <form id="form-input-parameters" class="needs-validation">
+                <div class="form-floating">
+                  <input id="input-power" class="form-control" type="number" step="0.01" placeholder="Moc instalacji (kWp)" required />
+                  <label for="floatingInput">Moc instalacji (kWp)</label>
+                  <div class="invalid-feedback">
+                    Wprowadź moc instalacji fotowoltaicznej.
                   </div>
+                </div>
 
-                  <div class="my-3 pt-2 px-2 border rounded">
-                    <label id="label-angle" class="form-label">Kąt nachylenia paneli: 30°</label>
-                    <input id="input-angle" type="range" class="form-range" min="0" max="90" step="10" value="30">
-                  </div>
+                <div class="my-3 pt-2 px-2 border rounded">
+                  <label id="label-angle" class="form-label">Kąt nachylenia paneli: 30°</label>
+                  <input id="input-angle" type="range" class="form-range" min="0" max="90" step="10" value="30">
+                </div>
+              </form>
 
-                  <div class="form-floating">
-
-                    <select id="input-select-azimuth" class="form-select" aria-label="Default select example">
-                      <option value="90">Zachód 270°</option>
-                      <option value="60">Południowy Zachód 240°</option>
-                      <option value="30">Południowy Zachód 210°</option>
-                      <option value="0" selected>Południe 180°</option>
-                      <option value="-30">Południowy Wschód 150°</option>
-                      <option value="-60">Południowy Wschód 120°</option>
-                      <option value="-90">Wschód 90°</option>
-                    </select>
-                    <label for="floatingSelect">Kierunek paneli</label>
-                  </div>
-                  
-                  <!-- <div class="mt-3 pt-2 px-2 border rounded">
-                  <label id="label-azimuth" class="form-label">Skierowanie paneli: 0°</label>
-                  <input id="input-azimuth" type="range" class="form-range" min="-90" max="90" step="30" value="0"> -->
-                </form>
+              <div class="form-floating">
+                <select id="input-select-azimuth" class="form-select" aria-label="Default select example">
+                  <option value="90">Zachód 270°</option>
+                  <option value="60">Południowy Zachód 240°</option>
+                  <option value="30">Południowy Zachód 210°</option>
+                  <option value="0" selected>Południe 180°</option>
+                  <option value="-30">Południowy Wschód 150°</option>
+                  <option value="-60">Południowy Wschód 120°</option>
+                  <option value="-90">Wschód 90°</option>
+                </select>
+                <label for="input-select-azimuth">Kierunek paneli</label>
               </div>
+            </div>
 
-              <div class="my-2 col-12 col-lg-7" style="margin: auto;">
-                <h3>Wyjaśnienie parametrów</h3>
-                <p>Moc instalacji PV, wyrażona w kilowatopik (1kWp = 1000Wp), to maksymalna wydajność jaką może osiągnąć instalacja fotowoltaiczna.</p>
-                <p>Kąt nachylenia paneli PV to pochylenie ich powierzchni względem poziomu, wpływające na efektywność absorpcji energii słonecznej.</p>
-                <p>Kierunek instalacji paneli PV to orientacja względem Słońca, optymalizująca pochłanianie energii słonecznej dla maksymalnej wydajności.</p>
-              </div>
+            <div class="my-2 col-12 col-lg-7" style="margin: auto;">
+              <h3>Wyjaśnienie parametrów</h3>
+              <p>Moc instalacji PV, wyrażona w kilowatopik (1kWp = 1000Wp), to maksymalna wydajność jaką może osiągnąć instalacja fotowoltaiczna.</p>
+              <p>Kąt nachylenia paneli PV to pochylenie ich powierzchni względem poziomu, wpływające na efektywność absorpcji energii słonecznej.</p>
+              <p>Kierunek instalacji paneli PV to orientacja względem Słońca, optymalizująca pochłanianie energii słonecznej dla maksymalnej wydajności.</p>
+            </div>
           </div>
 
           <h2>2. Wprowadź lokalizację</h2>
-          
-          <div style="width: 90%; margin: auto;">
+          <p style="font-size: large;">
+            Kliknij na mapę lub użyj wyszukiwarki w lewym dolnym rogu mapy, aby wprowadzić lokalizację, która posłuży do wyliczenia produkcji energii z instalacji fotowoltaicznej.
+          </p>
+
+          <div class="mx-4">
             <div id="map-container">
               <div id="map" style="width: 100%; height: 100%; border: solid 2px white; border-radius: 1em"></div>
             </div>
             <div id="map-wrong-input" class="invalid-feedback" style="display: none;">
-              Kliknij na mapę, aby wprowadzić lokalizację.
+              Kliknij na mapę lub użyj wyszukiwarki w lewym dolnym rogu, aby wprowadzić lokalizację.
             </div>
             <p id="map-lat" style="margin-bottom: 0; margin-top: 1em;"></p>
             <p id="map-lng" style="margin-top: 0;"></p>
-            
-            <!-- <div class="input-group mb-3">
-              <input class="form-control" type="search" id="input-search-location" placeholder="Wyszukaj lokalizację" aria-describedby="button-location">
-            
-              <button class="btn btn-outline-secondary" type="button" id="button-location"><i class="bi bi-search"></i></button>
-            </div> -->
           </div>
 
-          <!-- <h2>3. Zużycie energii</h2>
+          <div class="accordion" id="accordionExample">
+            <div class="accordion-item">
+              <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="false" aria-controls="panelsStayOpen-collapseTwo">
+                  <h2>3. Zużycie energii (opcjonalnie)</h2>
+                </button>
+              </h2>
+              <!-- <div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse"> -->
+              <div id="panelsStayOpen-collapseTwo" class="accordion-collapse">
+                <div class="accordion-body">
+                  <p>Lorem ipsum dolor sit amet consectetur adipiscing elit, nostra tempus praesent purus libero leo, tincidunt cras posuere dictum phasellus vel.</p>
 
-          <div class="row consumption">
-            <input type="range" class="form-range" id="customRange1">
-            <input type="range" class="form-range" id="customRange1">
-            <input type="range" class="form-range" id="customRange1">
-            <input type="range" class="form-range" id="customRange1">
-            <input type="range" class="form-range" id="customRange1">
-            <input type="range" class="form-range" id="customRange1">
-            <input type="range" class="form-range" id="customRange1">
-            <input type="range" class="form-range" id="customRange1">
-            <input type="range" class="form-range" id="customRange1">
-            <input type="range" class="form-range" id="customRange1">
-            <input type="range" class="form-range" id="customRange1">
-            <input type="range" class="form-range" id="customRange1">
-          </div> -->
+                  <div class="row w-100">
+                    <form class="p-0 m-0 row needs-validation consumtion-form" novalidate>
+                      <div class="col-12">
+                        <table id="dataTable" class="w-75 table" style="border: solid 1px black; table-layout: fixed;">
+                          <tr>
+                            <th scope="col">Typ ogrzewania</th>
+                            <th scope="col">Moc nominalna</th>
+                            <th scope="col">Współczynnik COP dla pomp ciepła</th>
+                          </tr>
+                          <tr>
+                            <td>Pompa ciepla</td>
+                            <td>12000 W</td>
+                            <td>4.5</td>
+                          </tr>
+                        </table>
+
+                          <div class="row">
+                          <div class="col-11">
+                            <div class="row">
+                              <div class="col-4">
+                                <!-- <input type="text" id="value1" class="form-control" placeholder="Typ ogrzewania" value="" required> -->
+                                <div class="form-floating">
+                                  <select id="value1" class="h-100 form-select" aria-label="Default select example">
+                                    <option value="Pompa ciepła" selected>Pompa ciepła</option>
+                                    <option value="Grzejnik elektryczny">Grzejnik elektryczny</option>
+                                    <option value="Grzałka elektryczny">Grzałka elektryczny</option>
+                                  </select>
+                                  <label for="value1">Kierunek paneli</label>
+                                </div>
+                              </div>
+                                
+                              <div class="col-4">
+                                <input type="text" id="value2" class="h-100 form-control" placeholder="Moc nominalna" value="" required>
+                              </div>
+                              <div class="col-4">
+                                <input type="text" id="value3" class="h-100 form-control" placeholder="Współczynnik COP" value="" required>
+                              </div>
+                            </div>
+                          </div>
+
+                          <!-- <div class="col-1" style="display: flex; justify-content: end;"> -->
+                          <div class="col-1" style="display: flex;">
+                            <!-- <button type="submit" onclick="addRow()" style="margin-top: auto;">+</button> -->
+                            <button id="consumtion-button" type="submit" class="btn btn-primary m-auto" style="margin-top: auto;">+</button>
+                          </div>
+                        </div>
+
+                        </div>
+                      </div>
+
+                      
+                    </form>
+                  </div>
+
+                   <div>
+                      <!-- <ul id="consumtion-items" class="list-group" style="list-style: none; padding: 0;">
+                        <li class="list-group-item">
+                          <div class="row" style="width: 80%; height: 4em; margin-left: 2em; background-color: red; justify-content: space-between;">
+                            <div class="col-4 h-100" style="background-color: white;">
+                              Typ ogrzewania
+                            </div>
+                            <div class="col-4 h-100" style="background-color: white;">
+                              Moc nominalna
+                            </div>
+                            <div class="col-4 h-100" style="background-color: white;">
+                              Współczynnik dla pomp ciepła
+                            </div>
+                          </div>
+                        </li>
+                        <li class="list-group-item">
+                          <h4>Dodaj kolejne urządzenie:</h4>
+                          <form class="row needs-validation p-0 m-0" novalidate>
+                            <div class="row" style="width: 80%; height: 4em; margin-left: 2em; background-color: red; justify-content: space-between;">
+                              <div class="col-4 h-100">
+                                <input type="text" class="w-100 h-100" id="input" placeholder="Typ ogrzewania" aria-describedby="email-help" required>
+                              </div>
+
+                              <div class="col-4 h-100">
+                                <input type="text" class="w-100 h-100" id="input" placeholder="Moc nominalna" aria-describedby="email-help" required>
+                              </div>
+
+                              <div class="col-4 h-100">
+                                <input type="text" class="w-100 h-100" id="input" placeholder="Współczynnik COP" aria-describedby="email-help" required>
+                              </div>
+                            </div>
+
+                            <div class="col-1 my-auto">
+                              <button id="button" class="btn btn-primary" type="button">+</button>
+                            </div>
+                          </form>
+                        </li>
+                      </ul> -->
+                      
+                      <!-- <div class="row">
+
+                          <form class="row needs-validation p-0" novalidate>
+                            <div class="row" style="width: 80%; height: 4em; margin-left: 4em; background-color: red; justify-content: space-between;">
+
+                              <div class="col-4 h-100">
+                                <input type="text" class="w-100 h-100" id="input" placeholder="Typ ogrzewania" aria-describedby="email-help" required>
+                                <div id="email-help" class="form-text" style="display: block;">Nigdy nie udostępnimy Twojego adresu e-mail.</div>
+                                <div class="invalid-feedback">
+                                  Wprowadź prawidłowy adres e-mail.
+                                </div>
+                              </div>
+
+                              <div class="col-4 h-100">
+                                <input type="text" class="w-100 h-100" id="input" placeholder="Moc nominalna" aria-describedby="email-help" required>
+                              </div>
+
+                              <div class="col-4 h-100">
+                                <input type="text" class="w-100 h-100" id="input" placeholder="Współczynnik COP" aria-describedby="email-help" required>
+                              </div>
+
+                            </div>
+
+                            <div class="col-1 my-auto">
+                              <button id="button" class="btn btn-primary" type="button">+</button>
+                            </div>
+
+                          </form>
+
+                          <div class="m-2 col-4" style="background-color: blue; text-align: center;">
+                            <input> 
+                          </div>
+                          <div class="m-2 col-4" style="background-color: blue;">
+                            Moc nominalna
+                          </div>
+                          <div class="m-2 col-3" style="background-color: blue;">
+                            Współczynnik dla pomp ciepła
+                          </div>
+                        </div>
+                        <div style="background-color: aqua; width: 10%; height: 4em;"></div>
+                      </div> -->
+                   </div>
+                </div>
+              </div>
+            </div>
+          </div>
 
           <a href="#simulation-card">
             <button class="btn btn-outline-primary" type="button" id="button-calculate">Oblicz szacowaną produkcję</button>
@@ -120,18 +250,82 @@
         <br>
 
         <h3>Produkcja i zysk</h3>
-        <div id="plot" class="plot"></div>
+        <p>
+          Wykres produkcji oraz zysku instalacji fotowoltaicznej od 1 stycznia 2018 do dziś. Pierwsza oś y wyraża produkcję w kWh, uwzględniając lokalizację i parametry instalacji. Druga oś y to zysk w PLN, obliczony z godzinowej produkcji pomnożonej przez stawki energii z rynku na dnia następnego.
+        </p>
+        
+        <div id="plot-loading" class="plotlybars-wrapper">
+          <div class="plotlybars">
+            <div class="plotlybars-bar b1"></div>
+            <div class="plotlybars-bar b2"></div>
+            <div class="plotlybars-bar b3"></div>
+            <div class="plotlybars-bar b4"></div>
+            <div class="plotlybars-bar b5"></div>
+            <div class="plotlybars-bar b6"></div>
+            <div class="plotlybars-bar b7"></div>
+          </div>
+          <div class="plotlybars-text">
+            Ładowanie wykresu...
+          </div>
+        </div>
+
+        <div id="plot" class="plot">
+          
+        </div>
+
+        <!-- <div class="accordion" id="accordionExample">
+          <div class="accordion-item">
+            <h2 class="accordion-header">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="false" aria-controls="panelsStayOpen-collapseTwo">
+                <h3>Skumulowana produkcja i zysk</h3>
+              </button>
+            </h2>
+            <div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse">
+              <div class="accordion-body">
+                <p>
+                  Wykres skumulowanej produkcji oraz zysku z instalacji fotowoltaicznej od 1 stycznia 2018 do dziś. Pierwsza oś y przedstawia skumulowaną produkcję w MWh, uwzględniając lokalizację i parametry instalacji. Druga oś y to skumulowany zysk w PLN, obliczony z godzinowej produkcji pomnożonej przez stawki energii z rynku na dnia następnego.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div> -->
 
         <h3>Skumulowana produkcja i zysk</h3>
+        <p>
+          Wykres skumulowanej produkcji oraz zysku z instalacji fotowoltaicznej od 1 stycznia 2018 do dziś. Pierwsza oś y przedstawia skumulowaną produkcję w MWh, uwzględniając lokalizację i parametry instalacji. Druga oś y to skumulowany zysk w PLN, obliczony z godzinowej produkcji pomnożonej przez stawki energii z rynku na dnia następnego.
+        </p>
+
+        <div id="plot-cumulative-loading" class="plotlybars-wrapper">
+          <div class="plotlybars">
+            <div class="plotlybars-bar b1"></div>
+            <div class="plotlybars-bar b2"></div>
+            <div class="plotlybars-bar b3"></div>
+            <div class="plotlybars-bar b4"></div>
+            <div class="plotlybars-bar b5"></div>
+            <div class="plotlybars-bar b6"></div>
+            <div class="plotlybars-bar b7"></div>
+          </div>
+          <div class="plotlybars-text">
+            Ładowanie wykresu...
+          </div>
+        </div>
         <div id="plot-cumulative" class="plot"></div>
 
-        <div class="table-container">
+        <!-- <div class="table-container">
           <table id="simulation-table" class="table table-striped caption-top"></table>
-        </div>
+        </div> -->
+        <!-- <div class="heatmap-container">
+          <div id="heatmap-production"></div>
+        </div> -->
+        <div id="heatmap-production" class="w-100"></div>
+
+        <div style="height: 10em;"></div>
+
+        <div id="heatmap-profit" class="w-100"></div>
       </section>
 
       <section class="contact">
-        <h3 style="text-align: center;">Wprowadź adres e-mail, a skontaktujemy się z Tobą.</h3>
+        <h4 style="text-align: center;">Wprowadź adres e-mail, a skontaktujemy się z Tobą.</h4>
 
         <div class="my-4 mx-auto col-12 col-md-9 col-lg-6">
           <div class="row">
@@ -139,7 +333,7 @@
             <div id="email-help" class="form-text" style="display: block;">Nigdy nie udostępnimy Twojego adresu e-mail.</div>
             <div id="email-error" class="form-text" style="color: red; display: none;">Wprowadź prawidłowy adres e-mail.</div>
 
-            <div class="mt-2 form-check">
+            <div class="mt-3 form-check">
               <input type="checkbox" class="form-check-input" id="checkbox-email">
               <label class="form-check-label" for="checkbox-email">Akceptuję <a href="regulamin.html">regulamin</a>.</label>
             </div>
@@ -148,6 +342,34 @@
             <button class="my-4 btn btn-primary" type="submit" id="button-email">Zapisz</button>
           </div>
         </div>
+
+        <!-- <div class="mx-auto col-12 col-md-9 col-lg-6">
+          <div class="row">
+            <form class="row g-3 needs-validation" novalidate>
+              <div class="col-12">
+                <input type="email" class="form-control" id="input-email" placeholder="E-mail" aria-describedby="email-help" required>
+                <div id="email-help" class="form-text" style="display: block;">Nigdy nie udostępnimy Twojego adresu e-mail.</div>
+                <div class="invalid-feedback">
+                  Wprowadź prawidłowy adres e-mail.
+                </div>
+              </div>
+              <div class="col-12">
+                <div class="form-check">
+                  <input type="checkbox" class="form-check-input" id="checkbox-email" required>
+                  <label class="form-check-label" for="checkbox-email">
+                    Akceptuję <a href="regulamin.html">regulamin</a>.
+                  </label>
+                  <div class="invalid-feedback">
+                    Zaakceptuj regulamin, aby kontynuować.
+                  </div>
+                </div>
+              </div>
+              <div class="col-12" style="display: flex;">
+                <button id="button-email" class="btn btn-primary mx-auto" type="submit">Zapisz</button>
+              </div>
+            </form>
+          </div>
+        </div> -->
 
         <!-- Email popup -->
         <div class="modal fade" id="email-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
